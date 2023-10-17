@@ -3,7 +3,7 @@ import time
 import cv2
 import numpy as np
 
-from .model import Backbone, l2_norm, MobileFaceNet
+from .model import Backbone, l2_norm
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 import torch
