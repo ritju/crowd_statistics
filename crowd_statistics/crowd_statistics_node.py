@@ -58,7 +58,7 @@ class Crowd_Statistics(Node):
                 self.args = parser.parse_args(args=[])
 
                 local_rank = 0
-                torch.backends.cudnn.enabled = True
+                torch.backends.cudnn.enabled = False
                 torch.backends.cudnn.benchmark = True
 
                 load_config(cfg, self.args.config)
