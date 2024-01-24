@@ -135,7 +135,7 @@ class Crowd_Statistics(Node):
                         self.gpuMat_cv = cv2.cuda.createGpuMatFromCudaMemory(image.height,image.width,cv2.CV_8UC4,image.devptr,image.pitch)
                         self.gpuMat_cv = cv2.cuda.cvtColor(self.gpuMat_cv,cv2.COLOR_BGRA2RGB)
                         self.gpuMat_cv = cv2.cuda.resize(self.gpuMat_cv,(480,640))#540,960
-
+                        self.gpuMat_cv = cv2.cuda.rotate(self.gpuMat_cv,rotateCode=cv2.ROTATE_180)
                         # 将数据从guMat拷贝到tensor
                         # gpumat_shape = self.gpuMat_cv.download().shape
                         self.gpuTensor = torch.zeros((self.gpuMat_cv.size()[1],self.gpuMat_cv.size()[0],3),device=self.device,dtype=torch.uint8)
