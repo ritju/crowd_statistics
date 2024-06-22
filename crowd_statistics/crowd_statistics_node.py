@@ -228,9 +228,9 @@ class Crowd_Statistics(Node):
                                                 if current_time - self.track_dict[face_uuid]['end_time'] <= 2:
                                                         self.track_dict[face_uuid]['end_time'] = current_time
                                                                  
-                cv2.namedWindow(f'{camera_id}',0)
-                cv2.imshow(f'{camera_id}',result_frame)
-                cv2.waitKey(1)
+                # cv2.namedWindow(f'{camera_id}',0)
+                # cv2.imshow(f'{camera_id}',result_frame)
+                # cv2.waitKey(1)
                 
         # 目标检测模型的推理函数，返回person和face的坐标框
         def inference(self, img):
