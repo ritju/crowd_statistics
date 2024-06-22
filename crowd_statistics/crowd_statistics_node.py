@@ -93,6 +93,22 @@ class Crowd_Statistics(Node):
                 self.is_save = False
                 self.cpuMat = np.zeros([1920, 1080, 4], np.uint8)
 
+                # 获取相机旋转环境变量
+                self.panel_front_camera = os.environ.get('PANEL_FRONT_CAMERA')
+                if self.panel_front_camera is not None:
+                        self.panel_front_camera = int(self.panel_front_camera)
+                else:
+                        self.get_logger().info('没有获取到 PANEL_FRONT_CAMERA 环境变量，手动将其设置为0')
+                        self.panel_front_camera = 0
+
+                self.panel_back_camera = os.environ.get('PANEL_BACK_CAMERA')
+                if self.panel_back_camera is not None:
+                        self.panel_back_camera = int(self.panel_back_camera)
+                else:
+                        self.get_logger().info('没有获取到 PANEL_BACK_CAMERA 环境变量，手动将其设置为0')
+                        self.panel_back_camera = 0
+                
+
                 # update_image_thread = threading.Thread(target=self.update_image)
                 # update_image_thread.start()
                 self.update_image()
@@ -123,6 +139,12 @@ class Crowd_Statistics(Node):
                         cpy.dstY = 0
                         ret = cuda.cuMemcpy2D(cpy)
                         self.cuda_image = cv2.cvtColor(cv2.resize(self.cpuMat, (360, 640)), cv2.COLOR_RGBA2BGR)
+                        # 是否旋转图像
+                        if self.panel_front_camera == 1 and image.image_id == 0:
+                                self.cuda_image = cv2.flip(self.cuda_image,0)
+                        elif self.panel_back_camera == 1 and image.image_id == 1:
+                                self.cuda_image = cv2.flip(self.cuda_image,0)
+
                         # 开始对图像进行目标检测和人脸识别
                         self.detect_match_face(self.cuda_image,image.image_id)
                         # cv2.imshow('CUDA CAM {}'.format(1), cv2.cvtColor(cv2.resize(self.cpuMat, (360, 640)), cv2.COLOR_RGBA2BGR))
@@ -206,8 +228,8 @@ class Crowd_Statistics(Node):
                                                 if current_time - self.track_dict[face_uuid]['end_time'] <= 2:
                                                         self.track_dict[face_uuid]['end_time'] = current_time
                                                                  
-                cv2.namedWindow('face_match',0)
-                cv2.imshow('face_match',result_frame)
+                cv2.namedWindow(f'{camera_id}',0)
+                cv2.imshow(f'{camera_id}',result_frame)
                 cv2.waitKey(1)
                 
         # 目标检测模型的推理函数，返回person和face的坐标框
